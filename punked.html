@@ -1,1 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="One final emergency tech resource.">
+  <title>Your emergency tech resource</title>
 
+  <style>
+    :root {
+      --background: #fff8fa;
+      --card: #ffffff;
+      --text: #382f32;
+      --muted: #74686c;
+      --pink: #b84f73;
+      --pink-dark: #923b59;
+      --pink-soft: #f9e4eb;
+      --border: #f2d8e1;
+      --shadow: 0 18px 50px rgba(91, 50, 64, 0.1);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--background);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.6;
+    }
+
+    main {
+      width: min(900px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 48px 0 28px;
+      text-align: center;
+    }
+
+    h1 {
+      margin: 0 0 20px;
+      font-size: clamp(1.35rem, 3vw, 1.8rem);
+      font-weight: 650;
+      letter-spacing: -0.02em;
+    }
+
+    .video-card {
+      overflow: hidden;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      background: var(--card);
+      box-shadow: var(--shadow);
+    }
+
+    .video-wrap {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      background: #111;
+    }
+
+    .video-wrap iframe {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+
+    .sound-button {
+      margin: 14px 0;
+      padding: 8px 14px;
+      border: 0;
+      border-radius: 999px;
+      background: var(--pink-soft);
+      color: var(--pink-dark);
+      font: inherit;
+      font-size: 0.9rem;
+      font-weight: 650;
+      cursor: pointer;
+      transition: transform 160ms ease, background 160ms ease;
+    }
+
+    .sound-button:hover {
+      transform: translateY(-1px);
+      background: #f5d6e1;
+    }
+
+    .sound-button:focus-visible,
+    .resource-link:focus-visible {
+      outline: 3px solid rgba(184, 79, 115, 0.35);
+      outline-offset: 3px;
+    }
+
+    .resources {
+      max-height: 0;
+      margin-top: 0;
+      overflow: hidden;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(14px);
+      transition:
+        opacity 700ms ease,
+        transform 700ms ease,
+        max-height 900ms ease,
+        margin-top 700ms ease,
+        visibility 0s linear 900ms;
+    }
+
+    .resources.is-visible {
+      max-height: 900px;
+      margin-top: 30px;
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+      transition-delay: 0s;
+    }
+
+    .resource-card {
+      padding: clamp(24px, 5vw, 40px);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      background: var(--card);
+      box-shadow: 0 12px 35px rgba(91, 50, 64, 0.06);
+    }
+
+    h2 {
+      margin: 0 0 8px;
+      font-size: clamp(1.5rem, 4vw, 2rem);
+      line-height: 1.2;
+    }
+
+    .intro {
+      max-width: 620px;
+      margin: 0 auto 24px;
+      color: var(--muted);
+    }
+
+    .resource-list {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      max-width: 620px;
+      margin: 0 auto 26px;
+      padding: 0;
+      list-style: none;
+    }
+
+    .resource-link {
+      display: block;
+      padding: 13px 16px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: #fffafb;
+      color: var(--pink-dark);
+      font-weight: 650;
+      text-decoration: none;
+      transition: transform 160ms ease, border-color 160ms ease, background 160ms ease;
+    }
+
+    .resource-link:hover {
+      transform: translateY(-2px);
+      border-color: #e9b9c9;
+      background: var(--pink-soft);
+    }
+
+    .reminder {
+      margin: 0;
+      font-weight: 650;
+    }
+
+    footer {
+      padding: 24px 12px 4px;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 600px) {
+      main {
+        width: min(100% - 20px, 900px);
+        padding-top: 28px;
+      }
+
+      .video-card,
+      .resource-card {
+        border-radius: 16px;
+      }
+
+      .resource-list {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main>
+    <h1>Your emergency tech resource</h1>
+
+    <section class="video-card" aria-label="Emergency tech resource video">
+      <div class="video-wrap">
+        <iframe
+          id="rickroll-video"
+          data-video-id="dQw4w9WgXcQ"
+          title="Rick Astley - Never Gonna Give You Up"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          referrerpolicy="strict-origin-when-cross-origin"
+          allowfullscreen>
+        </iframe>
+      </div>
+
+      <button class="sound-button" id="sound-button" type="button">
+        Sound on, obviously 🔊
+      </button>
+    </section>
+
+    <section class="resources" id="resources" aria-hidden="true">
+      <div class="resource-card">
+        <h2>Okay jk 😭</h2>
+        <p class="intro">
+          <strong>Here are some actual resources — save these somewhere before I disappear.</strong>
+        </p>
+
+        <ul class="resource-list">
+          <li>
+            <a class="resource-link" href="https://support.microsoft.com/en-us/" target="_blank" rel="noopener noreferrer">
+              Microsoft Support
+            </a>
+          </li>
+          <li>
+            <a class="resource-link" href="https://support.microsoft.com/en-us/windows/" target="_blank" rel="noopener noreferrer">
+              Windows Support
+            </a>
+          </li>
+          <li>
+            <a class="resource-link" href="https://support.microsoft.com/en-us/outlook/" target="_blank" rel="noopener noreferrer">
+              Outlook Support
+            </a>
+          </li>
+          <li>
+            <a class="resource-link" href="https://support.microsoft.com/en-us/teams/" target="_blank" rel="noopener noreferrer">
+              Microsoft Teams Support
+            </a>
+          </li>
+        </ul>
+
+        <p class="reminder">
+          And remember: turning it off and on again remains a valid intervention.
+        </p>
+      </div>
+
+      <footer>
+        Made with love and absolutely no formal IT qualifications ❤️
+      </footer>
+    </section>
+
+    <noscript>
+      <p>Okay jk 😭 — please enable JavaScript to reveal the actual resources.</p>
+    </noscript>
+  </main>
+
+  <script>
+    // Reveal the real resources after six seconds.
+    const resources = document.getElementById("resources");
+
+    window.setTimeout(() => {
+      resources.classList.add("is-visible");
+      resources.setAttribute("aria-hidden", "false");
+    }, 6000);
+
+    // The video starts muted because most browsers block autoplay with sound.
+    // This button lets the visitor unmute and play it with one click.
+    const soundButton = document.getElementById("sound-button");
+    const video = document.getElementById("rickroll-video");
+
+    // Add this page's address to the player request. This helps YouTube
+    // recognise the embedded player both locally and on GitHub Pages.
+    const videoId = video.dataset.videoId;
+    const pageOrigin = encodeURIComponent(window.location.origin);
+    video.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&playsinline=1&enablejsapi=1&origin=${pageOrigin}`;
+
+    soundButton.addEventListener("click", () => {
+      const sendCommand = (command) => {
+        video.contentWindow.postMessage(
+          JSON.stringify({ event: "command", func: command, args: [] }),
+          "https://www.youtube.com"
+        );
+      };
+
+      sendCommand("unMute");
+      sendCommand("playVideo");
+      soundButton.textContent = "Excellent choice 🎶";
+    });
+  </script>
+</body>
+</html>
