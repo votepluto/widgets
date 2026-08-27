@@ -145,10 +145,11 @@
 
     .resource-list {
       display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-columns: 1fr;
       grid-auto-rows: 1fr;
       gap: 12px;
-      max-width: 620px;
+      width: 100%;
+      max-width: none;
       margin: 0 auto 26px;
       padding: 0;
       list-style: none;
@@ -349,10 +350,12 @@
       resources.setAttribute("aria-hidden", "false");
     }, 6000);
 
-    // Try to autoplay with sound. Some browsers will block this until the
-    // visitor clicks the page, so the button below also starts the video.
+    // First try to autoplay loudly at full YouTube volume. If the browser
+    // blocks surprise audio, immediately fall back to muted autoplay.
     const soundButton = document.getElementById("sound-button");
     const video = document.getElementById("rickroll-video");
+    let player = null;
+    let usedMutedFallback = false;
 
     function sendVideoCommand(command, args = []) {
       if (!video.contentWindow) return;
@@ -363,22 +366,56 @@
       );
     }
 
-    function requestLoudAutoplay() {
-      sendVideoCommand("setVolume", [100]);
-      sendVideoCommand("unMute");
-      sendVideoCommand("playVideo");
+    function startMutedFallback() {
+      if (!player || usedMutedFallback) return;
+
+      usedMutedFallback = true;
+      player.setVolume(100);
+      player.mute();
+      player.playVideo();
     }
 
-    video.addEventListener("load", () => {
-      requestLoudAutoplay();
-      window.setTimeout(requestLoudAutoplay, 500);
-      window.setTimeout(requestLoudAutoplay, 1500);
-    });
+    function tryLoudAutoplay() {
+      player.setVolume(100);
+      player.unMute();
+      player.playVideo();
+
+      // Some browsers block the loud attempt without reporting it immediately.
+      // If playback did not begin, retry silently so the video still autoplays.
+      window.setTimeout(() => {
+        if (player.getPlayerState() !== YT.PlayerState.PLAYING) {
+          startMutedFallback();
+        }
+      }, 1200);
+    }
+
+    window.onYouTubeIframeAPIReady = function () {
+      player = new YT.Player("rickroll-video", {
+        events: {
+          onReady: tryLoudAutoplay,
+          onAutoplayBlocked: startMutedFallback
+        }
+      });
+    };
+
+    // Load YouTube's small player controller after the callback above exists.
+    const youtubeApi = document.createElement("script");
+    youtubeApi.src = "https://www.youtube.com/iframe_api";
+    document.head.appendChild(youtubeApi);
 
     soundButton.addEventListener("click", () => {
-      sendVideoCommand("setVolume", [100]);
-      sendVideoCommand("unMute");
-      sendVideoCommand("playVideo");
+      if (player) {
+        player.setVolume(100);
+        player.unMute();
+        player.playVideo();
+      } else {
+        sendVideoCommand("setVolume", [100]);
+        sendVideoCommand("unMute");
+        sendVideoCommand("playVideo");
+      }
+
       soundButton.textContent = "There we go 🎶";
     });
   </script>
+</body>
+</html>
