@@ -110,7 +110,7 @@
     }
 
     .resources.is-visible {
-      max-height: 900px;
+      max-height: 2600px;
       margin-top: 30px;
       opacity: 1;
       visibility: visible;
@@ -214,11 +214,11 @@
       <div class="video-wrap">
         <iframe
           id="rickroll-video"
-          data-video-id="dQw4w9WgXcQ"
-          data-video-id="xvFZjo5PgG0"
+          src="https://www.youtube.com/embed/xvFZjo5PgG0?si=qUt5XK32ShXrOMVy&amp;controls=0&amp;autoplay=1&amp;mute=1&amp;playsinline=1&amp;enablejsapi=1&amp;rel=0"
           title="Rick Astley - Never Gonna Give You Up"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
           referrerpolicy="strict-origin-when-cross-origin"
+          loading="eager"
           allowfullscreen>
         </iframe>
       </div>
@@ -238,22 +238,77 @@
         <ul class="resource-list">
           <li>
             <a class="resource-link" href="https://support.microsoft.com/en-us/" target="_blank" rel="noopener noreferrer">
-              Microsoft Support
+              Fine, call in the professionals
             </a>
           </li>
           <li>
             <a class="resource-link" href="https://support.microsoft.com/en-us/windows/" target="_blank" rel="noopener noreferrer">
-              Windows Support
+              Windows is having a little moment
             </a>
           </li>
           <li>
             <a class="resource-link" href="https://support.microsoft.com/en-us/outlook/" target="_blank" rel="noopener noreferrer">
-              Outlook Support
+              Outlook is not Outlook-ing
             </a>
           </li>
           <li>
             <a class="resource-link" href="https://support.microsoft.com/en-us/teams/" target="_blank" rel="noopener noreferrer">
-              Microsoft Teams Support
+              Teams is being Teams
+            </a>
+          </li>
+          <li>
+            <a class="resource-link" href="https://support.microsoft.com/en-us/onedrive/" target="_blank" rel="noopener noreferrer">
+              Where did my file go?
+            </a>
+          </li>
+          <li>
+            <a class="resource-link" href="https://support.microsoft.com/en-us/sharepoint/" target="_blank" rel="noopener noreferrer">
+              SharePoint has stopped sharing its point
+            </a>
+          </li>
+          <li>
+            <a class="resource-link" href="https://support.microsoft.com/en-us/windows/fix-wi-fi-connection-issues-in-windows-9424a1f7-6a3b-65a6-4d78-7f07eee84d2c" target="_blank" rel="noopener noreferrer">
+              The Wi-Fi has left the chat
+            </a>
+          </li>
+          <li>
+            <a class="resource-link" href="https://www.dell.com/support/kbdoc/en-au/000126484/how-to-connect-and-set-up-a-docking-station-with-a-dell-laptop" target="_blank" rel="noopener noreferrer">
+              The Dell hub thingo isn't thingo-ing
+            </a>
+          </li>
+          <li>
+            <a class="resource-link" href="https://support.microsoft.com/en-us/windows/troubleshoot-external-monitor-connections-in-windows-5b46f4a4-9634-06bb-7622-f960facdfd49" target="_blank" rel="noopener noreferrer">
+              My screens have abandoned me
+            </a>
+          </li>
+          <li>
+            <a class="resource-link" href="https://support.microsoft.com/en-us/windows/hardware/display-graphics/how-to-use-multiple-monitors-in-windows" target="_blank" rel="noopener noreferrer">
+              My mouse cannot travel between dimensions
+            </a>
+          </li>
+          <li>
+            <a class="resource-link" href="https://support.lenovo.com/au/en/contact-us" target="_blank" rel="noopener noreferrer">
+              The Lenovo is having a little moment
+            </a>
+          </li>
+          <li>
+            <a class="resource-link" href="https://www.konicaminolta.com.au/wp-content/uploads/2025/01/bizhub_c360i_c300i_c250i_quick_guide.pdf?ext=.pdf" target="_blank" rel="noopener noreferrer">
+              The printer has sensed fear
+            </a>
+          </li>
+          <li>
+            <a class="resource-link" href="https://support.microsoft.com/en-US/Office/copy-the-window-or-screen-contents" target="_blank" rel="noopener noreferrer">
+              Screenshot it before asking for help
+            </a>
+          </li>
+          <li>
+            <a class="resource-link" href="https://support.microsoft.com/en-us/windows/keyboard-shortcuts-in-windows-dcc61a57-8ff0-cffe-9796-cb9706c75eec" target="_blank" rel="noopener noreferrer">
+              How to look suspiciously competent
+            </a>
+          </li>
+          <li>
+            <a class="resource-link" href="https://support.microsoft.com/en-us/accounts-billing/work-school/reset-your-microsoft-work-or-school-account-password-using-security-info" target="_blank" rel="noopener noreferrer">
+              I have forgotten my entire digital identity
             </a>
           </li>
         </ul>
@@ -282,48 +337,35 @@
       resources.setAttribute("aria-hidden", "false");
     }, 6000);
 
-    // The video starts muted because most browsers block autoplay with sound.
-    // This button lets the visitor unmute and play it with one click.
+    // The video starts muted because browsers block surprise autoplay with sound.
+    // The URL above requests autoplay; these commands give it a second nudge
+    // once YouTube's player has finished loading.
     const soundButton = document.getElementById("sound-button");
     const video = document.getElementById("rickroll-video");
-    let player;
 
-    // Add this page's address to the player request. This helps YouTube
-    // recognise the embedded player both locally and on GitHub Pages.
-    const videoId = video.dataset.videoId;
-    const originSetting = window.location.protocol === "file:"
-      ? ""
-      : `&origin=${encodeURIComponent(window.location.origin)}`;
+    function sendVideoCommand(command) {
+      if (!video.contentWindow) return;
 
-    video.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&playsinline=1&enablejsapi=1${originSetting}`;
-
-    // YouTube calls this function when its player controls are ready.
-    // Muting first gives autoplay the best chance of being allowed.
-    function onYouTubeIframeAPIReady() {
-      player = new YT.Player("rickroll-video", {
-        events: {
-          onReady(event) {
-            event.target.mute();
-            event.target.playVideo();
-          },
-          onAutoplayBlocked() {
-            soundButton.textContent = "Press play for emergency support ▶";
-          }
-        }
-      });
+      video.contentWindow.postMessage(
+        JSON.stringify({ event: "command", func: command, args: [] }),
+        "https://www.youtube.com"
+      );
     }
 
-    // Load YouTube's official player controls.
-    const youtubeApi = document.createElement("script");
-    youtubeApi.src = "https://www.youtube.com/iframe_api";
-    document.head.appendChild(youtubeApi);
+    function requestMutedAutoplay() {
+      sendVideoCommand("mute");
+      sendVideoCommand("playVideo");
+    }
+
+    video.addEventListener("load", () => {
+      requestMutedAutoplay();
+      window.setTimeout(requestMutedAutoplay, 500);
+      window.setTimeout(requestMutedAutoplay, 1500);
+    });
 
     soundButton.addEventListener("click", () => {
-      if (player) {
-        player.unMute();
-        player.playVideo();
-      }
-
+      sendVideoCommand("unMute");
+      sendVideoCommand("playVideo");
       soundButton.textContent = "Excellent choice 🎶";
     });
   </script>
