@@ -285,23 +285,44 @@
     // This button lets the visitor unmute and play it with one click.
     const soundButton = document.getElementById("sound-button");
     const video = document.getElementById("rickroll-video");
+    let player;
 
     // Add this page's address to the player request. This helps YouTube
     // recognise the embedded player both locally and on GitHub Pages.
     const videoId = video.dataset.videoId;
-    const pageOrigin = encodeURIComponent(window.location.origin);
-    video.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&playsinline=1&enablejsapi=1&origin=${pageOrigin}`;
+    const originSetting = window.location.protocol === "file:"
+      ? ""
+      : `&origin=${encodeURIComponent(window.location.origin)}`;
+
+    video.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&playsinline=1&enablejsapi=1${originSetting}`;
+
+    // YouTube calls this function when its player controls are ready.
+    // Muting first gives autoplay the best chance of being allowed.
+    function onYouTubeIframeAPIReady() {
+      player = new YT.Player("rickroll-video", {
+        events: {
+          onReady(event) {
+            event.target.mute();
+            event.target.playVideo();
+          },
+          onAutoplayBlocked() {
+            soundButton.textContent = "Press play for emergency support ▶";
+          }
+        }
+      });
+    }
+
+    // Load YouTube's official player controls.
+    const youtubeApi = document.createElement("script");
+    youtubeApi.src = "https://www.youtube.com/iframe_api";
+    document.head.appendChild(youtubeApi);
 
     soundButton.addEventListener("click", () => {
-      const sendCommand = (command) => {
-        video.contentWindow.postMessage(
-          JSON.stringify({ event: "command", func: command, args: [] }),
-          "https://www.youtube.com"
-        );
-      };
+      if (player) {
+        player.unMute();
+        player.playVideo();
+      }
 
-      sendCommand("unMute");
-      sendCommand("playVideo");
       soundButton.textContent = "Excellent choice 🎶";
     });
   </script>
