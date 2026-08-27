@@ -4,7 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="One final emergency tech resource.">
-  <title>Your emergency tech resource</title>
+  <title>Emergency tech resources 💗</title>
+  <link
+    rel="icon"
+    type="image/svg+xml"
+    href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23b84f73'/%3E%3Crect x='13' y='13' width='38' height='30' rx='5' fill='white'/%3E%3Cpath d='M32 37s-10-5.7-10-12.1c0-5.1 6.2-6.7 10-2.5 3.8-4.2 10-2.6 10 2.5C42 31.3 32 37 32 37z' fill='%23b84f73'/%3E%3Cpath d='M9 47h46l-4.5 7h-37z' fill='white'/%3E%3C/svg%3E"
+  >
 
   <style>
     :root {
@@ -141,6 +146,7 @@
     .resource-list {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-auto-rows: 1fr;
       gap: 12px;
       max-width: 620px;
       margin: 0 auto 26px;
@@ -149,13 +155,19 @@
     }
 
     .resource-link {
-      display: block;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      min-height: 72px;
       padding: 13px 16px;
       border: 1px solid var(--border);
       border-radius: 12px;
       background: #fffafb;
       color: var(--pink-dark);
       font-weight: 650;
+      line-height: 1.35;
+      text-align: center;
       text-decoration: none;
       transition: transform 160ms ease, border-color 160ms ease, background 160ms ease;
     }
@@ -214,7 +226,7 @@
       <div class="video-wrap">
         <iframe
           id="rickroll-video"
-          src="https://www.youtube.com/embed/xvFZjo5PgG0?si=qUt5XK32ShXrOMVy&amp;controls=0&amp;autoplay=1&amp;mute=1&amp;playsinline=1&amp;enablejsapi=1&amp;rel=0"
+          src="https://www.youtube.com/embed/xvFZjo5PgG0?si=qUt5XK32ShXrOMVy&amp;controls=0&amp;autoplay=1&amp;mute=0&amp;playsinline=1&amp;enablejsapi=1&amp;rel=0"
           title="Rick Astley - Never Gonna Give You Up"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
           referrerpolicy="strict-origin-when-cross-origin"
@@ -224,7 +236,7 @@
       </div>
 
       <button class="sound-button" id="sound-button" type="button">
-        Sound on, obviously 🔊
+        Click if nothing's happening 👀
       </button>
     </section>
 
@@ -337,37 +349,36 @@
       resources.setAttribute("aria-hidden", "false");
     }, 6000);
 
-    // The video starts muted because browsers block surprise autoplay with sound.
-    // The URL above requests autoplay; these commands give it a second nudge
-    // once YouTube's player has finished loading.
+    // Try to autoplay with sound. Some browsers will block this until the
+    // visitor clicks the page, so the button below also starts the video.
     const soundButton = document.getElementById("sound-button");
     const video = document.getElementById("rickroll-video");
 
-    function sendVideoCommand(command) {
+    function sendVideoCommand(command, args = []) {
       if (!video.contentWindow) return;
 
       video.contentWindow.postMessage(
-        JSON.stringify({ event: "command", func: command, args: [] }),
+        JSON.stringify({ event: "command", func: command, args }),
         "https://www.youtube.com"
       );
     }
 
-    function requestMutedAutoplay() {
-      sendVideoCommand("mute");
+    function requestLoudAutoplay() {
+      sendVideoCommand("setVolume", [100]);
+      sendVideoCommand("unMute");
       sendVideoCommand("playVideo");
     }
 
     video.addEventListener("load", () => {
-      requestMutedAutoplay();
-      window.setTimeout(requestMutedAutoplay, 500);
-      window.setTimeout(requestMutedAutoplay, 1500);
+      requestLoudAutoplay();
+      window.setTimeout(requestLoudAutoplay, 500);
+      window.setTimeout(requestLoudAutoplay, 1500);
     });
 
     soundButton.addEventListener("click", () => {
+      sendVideoCommand("setVolume", [100]);
       sendVideoCommand("unMute");
       sendVideoCommand("playVideo");
-      soundButton.textContent = "Excellent choice 🎶";
+      soundButton.textContent = "There we go 🎶";
     });
   </script>
-</body>
-</html>
